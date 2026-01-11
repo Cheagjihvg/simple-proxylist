@@ -2,7 +2,7 @@ name: SIMPLE PROXY Updater
 
 on:
   schedule:
-    - cron: '*/1 * * * *'   # every 5 minutes
+    - cron: '*/5 * * * *'   # every 5 minutes
   workflow_dispatch:
 
 jobs:
@@ -38,22 +38,21 @@ jobs:
       - name: Run Proxy Updater
         run: python updater.py > proxy_output.txt 2>&1
 
-
-      # 7️⃣ Commit proxy file if changed
+      # 7️⃣ Replace proxy file and push
       - name: Commit proxy file
         run: |
           git config --local user.email "${{ secrets.GIT_EMAIL }}"
           git config --local user.name "${{ secrets.GIT_NAME }}"
 
           if [ -f proxy.txt ]; then
+            # Remove old file first
+            git rm -f proxy.txt || true
+
+            # Add new proxy file
             git add proxy.txt
-            if git diff --cached --quiet; then
-              echo "No changes to commit"
-            else
-              git commit -m "Update proxies"
-              # Force push to avoid rejected push errors
-              git push -f https://x-access-token:${{ secrets.GIT_TOKEN }}@github.com/Cheagjihvg/simple-proxylist.git HEAD:main
-            fi
+
+            # Commit and force push
+            git commit -m "Update proxies"
+            git push -f https://x-access-token:${{ secrets.GIT_TOKEN }}@github.com/Cheagjihvg/simple-proxylist.git HEAD:main
           else
             echo "proxy.txt not found, skipping commit"
-          fi
