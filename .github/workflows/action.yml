@@ -38,20 +38,22 @@ jobs:
       - name: Run Proxy Updater
         run: python updater.py > proxy_output.txt 2>&1
 
+
       # 7️⃣ Commit proxy file if changed
       - name: Commit proxy file
         run: |
           git config --local user.email "${{ secrets.GIT_EMAIL }}"
           git config --local user.name "${{ secrets.GIT_NAME }}"
-      
+
           if [ -f proxy.txt ]; then
             git add proxy.txt
             if git diff --cached --quiet; then
               echo "No changes to commit"
             else
               git commit -m "Update proxies"
-              git push https://x-access-token:${{ secrets.GIT_TOKEN }}@github.com/Cheagjihvg/simple-proxylist.git HEAD:main
+              # Force push to avoid rejected push errors
+              git push -f https://x-access-token:${{ secrets.GIT_TOKEN }}@github.com/Cheagjihvg/simple-proxylist.git HEAD:main
             fi
           else
             echo "proxy.txt not found, skipping commit"
-          fi
+
