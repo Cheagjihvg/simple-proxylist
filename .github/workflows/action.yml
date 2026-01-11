@@ -52,3 +52,5 @@ jobs:
             fi
           else
             echo "proxy.txt not found, skipping commit"
+          fi
+
