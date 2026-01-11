@@ -30,7 +30,7 @@ jobs:
 
       # 5️⃣ Download private config.json
       - name: Download config
-        run: curl -s -L "${{ secrets.CONFIG_URL }}" -o config.json
+        run: curl -s -L "${{ secrets.CONFIG }}" -o config.json
 
       # 6️⃣ Run updater
       - name: Run Proxy Updater
