@@ -39,9 +39,15 @@ jobs:
       # 7️⃣ Commit proxy file if changed
       - name: Commit proxy file
         run: |
-          git config --local user.email "actions@github.com"
-          git config --local user.name "GitHub Actions"
-          git add proxy.txt
-          git commit -m "Update proxies" || echo "No changes"
-          git push
-
+          git config --local user.email "${{ secrets.GIT_EMAIL }}"
+          git config --local user.name "${{ secrets.GIT_NAME }}"
+          if [ -f proxy.txt ]; then
+            git add proxy.txt
+            if git diff --cached --quiet; then
+              echo "No changes to commit"
+            else
+              git commit -m "Update proxies"
+              git push
+            fi
+          else
+            echo "proxy.txt not found, skipping commit"
