@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
 
@@ -27,10 +28,10 @@ jobs:
       - name: Run Proxy Updater
         run: python updater.py > proxy_output.txt 2>&1
 
-      - name: Commit proxy file
+      - name: Commit proxy list
         run: |
           git config --local user.email ${{ secrets.GIT_EMAIL }}
           git config --local user.name ${{ secrets.GIT_NAME }}
-          git add proxy_checked.txt
+          git add proxy.txt
           git commit -m "Update proxies" || echo "No changes"
           git push
