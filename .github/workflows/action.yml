@@ -48,9 +48,10 @@ jobs:
               echo "No changes to commit"
             else
               git commit -m "Update proxies"
-              git push
+              git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ secrets.GIT_NAME }}/simple-proxylist.git HEAD:main
             fi
           else
             echo "proxy.txt not found, skipping commit"
           fi
+
 
