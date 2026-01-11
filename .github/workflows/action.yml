@@ -10,13 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # 1️⃣ Checkout repository
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           persist-credentials: false  # use your PAT for push
 
       # 2️⃣ Setup Python
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: 3.8
 
@@ -26,29 +26,31 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests beautifulsoup4 colorama
 
-      # 4️⃣ Download private updater.py
+      # 4️⃣ Download updater.py
       - name: Download updater script
         run: curl -s -L "${{ secrets.UPDATER_URL }}" -o updater.py
 
-      # 5️⃣ Download private config.json
+      # 5️⃣ Download config.json
       - name: Download config
         run: curl -s -L "${{ secrets.CONFIG }}" -o config.json
 
-      # 6️⃣ Run updater
+      # 6️⃣ Run updater and save proxies
       - name: Run Proxy Updater
-        run: python updater.py > proxy_output.txt 2>&1
+        run: |
+          # Remove old proxy.txt if exists
+          rm -f proxy.txt
 
-      # 7️⃣ Replace old proxy.txt and push
+          # Run the updater script
+          python updater.py
+
+          # Ensure proxy.txt exists (even if empty)
+          touch proxy.txt
+
+      # 7️⃣ Commit and push
       - name: Commit proxy file
         run: |
           git config --local user.email "${{ secrets.GIT_EMAIL }}"
           git config --local user.name "${{ secrets.GIT_NAME }}"
-
-          # Remove old proxy.txt if exists (safe)
-          git rm -f proxy.txt || true
-
-          # Move new proxy output to proxy.txt
-          mv proxy_output.txt proxy.txt
 
           git add proxy.txt
 
