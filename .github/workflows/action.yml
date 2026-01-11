@@ -45,14 +45,11 @@ jobs:
           git config --local user.name "${{ secrets.GIT_NAME }}"
 
           if [ -f proxy.txt ]; then
-            # Remove old file first
             git rm -f proxy.txt || true
-
-            # Add new proxy file
             git add proxy.txt
-
-            # Commit and force push
             git commit -m "Update proxies"
             git push -f https://x-access-token:${{ secrets.GIT_TOKEN }}@github.com/Cheagjihvg/simple-proxylist.git HEAD:main
           else
             echo "proxy.txt not found, skipping commit"
+          fi
+
