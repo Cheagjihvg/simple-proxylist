@@ -6,34 +6,48 @@ on:
   workflow_dispatch:
 
 jobs:
-  update-proxies:
+  update_proxies:
     runs-on: ubuntu-latest
     steps:
+      # 1️⃣ Checkout repository
       - uses: actions/checkout@v2
 
+      # 2️⃣ Setup Python
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
 
+      # 3️⃣ Install dependencies
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install requests beautifulsoup4 colorama
 
-      - name: Download updater.py
-        run: curl -s -L ${{ secrets.UPDATER_URL }} -o updater.py
+      # 4️⃣ Download private updater.py
+      - name: Download updater script
+        run: curl -s -L "${{ secrets.UPDATER_URL }}" -o updater.py
 
-      - name: Download config.json
-        run: curl -s -L ${{ secrets.CONFIG }} -o config.json
+      # 5️⃣ Download private config.json
+      - name: Download config
+        run: curl -s -L "${{ secrets.CONFIG_URL }}" -o config.json
 
+      # 6️⃣ Run updater
       - name: Run Proxy Updater
         run: python updater.py > proxy_output.txt 2>&1
 
+      # 7️⃣ Commit proxy file if changed
       - name: Commit proxy file
         run: |
-          git config --local user.email ${{ secrets.GIT_EMAIL }}
-          git config --local user.name ${{ secrets.GIT_NAME }}
-          git add proxy.txt
-          git commit -m "Update proxies" || echo "No changes"
-          git push
+          git config --local user.email "${{ secrets.GIT_EMAIL }}"
+          git config --local user.name "${{ secrets.GIT_NAME }}"
+          if [ -f proxy.txt ]; then
+            git add proxy.txt
+            if git diff --cached --quiet; then
+              echo "No changes to commit"
+            else
+              git commit -m "Update proxies"
+              git push
+            fi
+          else
+            echo "proxy.txt not found, skipping commit"
