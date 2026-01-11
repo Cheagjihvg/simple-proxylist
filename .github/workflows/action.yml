@@ -8,7 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
 
@@ -23,15 +22,15 @@ jobs:
           pip install requests beautifulsoup4 colorama
 
       - name: Download updater script
-        run: curl -s -L ${{ secrets.UPDATER }} -o updater.py
+        run: curl -s -L ${{ secrets.UPDATER_URL }} -o updater.py
 
       - name: Run Proxy Updater
         run: python updater.py > proxy_output.txt 2>&1
 
-      - name: Commit proxy list
+      - name: Commit proxy file
         run: |
           git config --local user.email ${{ secrets.GIT_EMAIL }}
           git config --local user.name ${{ secrets.GIT_NAME }}
-          git add proxy.txt
+          git add proxy_checked.txt
           git commit -m "Update proxies" || echo "No changes"
           git push
