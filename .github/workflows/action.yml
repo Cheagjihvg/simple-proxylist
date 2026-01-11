@@ -11,6 +11,8 @@ jobs:
     steps:
       # 1️⃣ Checkout repository
       - uses: actions/checkout@v2
+        with:
+          persist-credentials: false  # use your PAT for push
 
       # 2️⃣ Setup Python
       - name: Setup Python
@@ -52,6 +54,3 @@ jobs:
             fi
           else
             echo "proxy.txt not found, skipping commit"
-          fi
-
-
