@@ -16,7 +16,7 @@ Download or use directly:
 
 - Updated automatically **every 5 minutes**  
 - Removes duplicates and invalid proxies  
-- Mix of HTTP, HTTPS, and SOCKS proxies  
+- Mix of HTTP, HTTPS, and SOCKS proxies 
 
 ---
 
