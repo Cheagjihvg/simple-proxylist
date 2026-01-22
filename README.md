@@ -21,7 +21,7 @@ Download or use directly:
 ---
 
 ## 💻 How to Use
-
+ 
 ### Python Example
 ```python
 import requests, random
